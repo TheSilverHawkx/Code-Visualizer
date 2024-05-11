@@ -1,0 +1,16 @@
+name: Jest Unit Tests
+run-name: ${{ github.actor }} is running jest tests
+on: 
+  pull_request:
+    branches:
+    - main
+jobs:
+  run-unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - run: npm install
+      - run: npm test

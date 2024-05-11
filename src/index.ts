@@ -3,8 +3,9 @@
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 import { existsSync } from "fs";
-import { FileCrawler } from "./repo-crawler/file-crawler.service";
-import { ProgrammingLanguage } from "./repo-crawler/consts/language-to-file-exntension.map";
+import { ProgrammingLanguage } from "./file-crawler/consts/language-to-file-exntension.map";
+import { supportedEcmaVersions } from "./code-parser/consts/js-code-parser.consts";
+import { createCodeParser } from "./code-parser/code-parser.utils";
 
 async function parseArgs() {
   return await yargs(hideBin(process.argv))
@@ -23,8 +24,14 @@ async function parseArgs() {
   .option("language",{
     desc: "Programming language to scan",
     type: "string",
+    demandOption: true,
     default: "Javascript",
     choices: Object.keys(ProgrammingLanguage)
+  })
+  .option("es-version", {
+    desc:'ES version of the code',
+    type: 'number',
+    choices:supportedEcmaVersions
   })
   .usage("Usage: $0 --folder-path <path to repo root> [--language <language name>]")
   .parse();
@@ -35,21 +42,9 @@ async function main() {
 
   console.log(`Scanning repository at ${argv["folder-path"]} for ${argv.language} files`);
 
-  const repoCrawler = new FileCrawler()
-  const files = await repoCrawler.getAllFilePathsByProgrammingLanguage(
-    <ProgrammingLanguage>argv.language,
-    argv["folder-path"]
-  );
+  const parser = createCodeParser(<ProgrammingLanguage>argv.language);
 
-  if (!files) {
-    console.log("No files found")
-    process.exit(0)
-  }
-
-  console.log(`Files found:`)
-  for (const file of files) {
-    console.log(file.fullpath())
-  }
+  parser.scan(argv.folderPath)
   process.exit(0);
 }
 

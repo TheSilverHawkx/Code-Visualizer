@@ -2,14 +2,18 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch CLI",
             "type": "node",
             "request": "launch",
-            "program": "${workspaceFolder}/dist/index.js",
-            "preLaunchTask": "Build Project",
-            "args": ["--folder-path", "O:\\Programming\\Javascript\\Code Visualizer\\examples\\node-hello"], // Update with real path or remove
-            "console": "integratedTerminal",
-            "skipFiles": ["<node_internals>/**"]
+            "name": "Launch Program",
+            "program": "${workspaceFolder}/src/index.ts",
+            "preLaunchTask": "tsc: build - tsconfig.json",
+            "args": [
+                "--folder-path",
+                "${input:folderPath}",
+                "--language",
+                "${input:language}"
+            ],
+            "outFiles": ["${workspaceFolder}/dist/**/*.js"],
         },
         {
             "type": "node",
@@ -27,6 +31,20 @@
             "env": {
                 "NODE_ENV": "test"
             }
+        }
+    ],
+    "inputs": [
+        {
+            "id": "language",
+            "type": "pickString",
+            "description": "Select programming language to visualize",
+            "options": ["Javascript", "Typescript"]
+        },
+        {
+            "id": "folderPath",
+            "type": "promptString",
+            "description": "Enter Folder Path",
+            "default": "./examples"
         }
     ]
 }

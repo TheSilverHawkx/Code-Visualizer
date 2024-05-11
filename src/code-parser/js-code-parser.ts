@@ -6,6 +6,7 @@ import * as acorn from 'acorn';
 import { supportedEcmaVersions } from "./consts/js-code-parser.consts";
 import { FileCrawler } from "../file-crawler/file-crawler.service";
 import { ProgrammingLanguage } from "../file-crawler/consts/language-to-file-exntension.map";
+import { UnknownESVersion } from "../error.types";
 
 export class JavascriptCodeParser extends BaseCodeParser {
     private readonly ecmascriptVersion: acorn.ecmaVersion | undefined;
@@ -27,9 +28,9 @@ export class JavascriptCodeParser extends BaseCodeParser {
         this.fileCrawler = new FileCrawler(ProgrammingLanguage.Javascript);
     }
 
-    parseFile( filePath: Path): any {
+    parseFile( filePath: string): any {
         try {
-            const fileContents = readFileSync(filePath.fullpath(),{
+            const fileContents = readFileSync(filePath,{
                 encoding: this.fileEncoding
             });
     
@@ -43,7 +44,7 @@ export class JavascriptCodeParser extends BaseCodeParser {
                         break;
                     } catch (error) {
                         if (version === this.supportedEcmaVersions.at(-1)) {
-                            throw Error(`Unknown ecmascript version`)
+                            throw new UnknownESVersion(filePath)
                         }
                     }
                 }
@@ -59,14 +60,13 @@ export class JavascriptCodeParser extends BaseCodeParser {
     }
 
 
-    async scan(folderPath: string): Promise<void> {
+    async scan(folderPath: string): Promise<acorn.Program | undefined> {
         const files = this.fileCrawler.getAllFilePathsByProgrammingLanguage(
             folderPath
         );
 
         if (files && files.length) {
-            const AST = this.parseFile(files[0]);
-            console.log(JSON.stringify(AST))
+            return this.parseFile(files[0].fullpath());
         }
     }
 

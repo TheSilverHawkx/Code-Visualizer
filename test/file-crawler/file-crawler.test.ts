@@ -10,29 +10,21 @@ jest.mock('glob', () => ({
       const patternString = Array.isArray(pattern) ? pattern.join(',') : pattern;
 
       const filesPaths = globMockFiles(patternString);
-      return Promise.resolve(
-        filesPaths.map(file => ({name: file, isFile: () => true, isDirectory: () => false}))
-      );
+      return filesPaths.map(file => ({name: file, isFile: () => true, isDirectory: () => false}));
     } else {
       // Return a Promise of string array otherwise
-      return Promise.resolve([]);
+      return [];
     }
   }) as any,
 }));
 
 
 describe('FileCrawler', () => {
-  let fileCrawler: FileCrawler;
-
-  beforeAll(() => {
-    
-  });
-
   describe.each(ProgrammingLanguagesKeys)(`Testing Programming Language %s`, (language: string) => {
     const fileCrawler = new FileCrawler(<ProgrammingLanguage>language);
 
-    test(`Should return file paths for a valid programming language`, async () => {
-      const result = await fileCrawler.getAllFilePathsByProgrammingLanguage();
+    test(`Should return file paths for a valid programming language`, () => {
+      const result = fileCrawler.getAllFilePathsByProgrammingLanguage();
       expect(result).toBeDefined()
       expect(result.length).toBeGreaterThan(0)
     });

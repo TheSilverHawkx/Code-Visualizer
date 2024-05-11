@@ -12,7 +12,8 @@
     "moduleResolution": "node",
     "baseUrl": "./",
     "paths": {
-      "*": ["node_modules/*"]
+      "node_modules/*": ["node_modules/*"],
+      "src/*": ["src/*"]
     },
     "types": ["node", "yargs","jest"],
   },

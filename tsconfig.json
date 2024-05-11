@@ -13,7 +13,7 @@
     "paths": {
       "*": ["node_modules/*"]
     },
-    "types": ["node", "yargs"],
+    "types": ["node", "yargs","jest"],
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

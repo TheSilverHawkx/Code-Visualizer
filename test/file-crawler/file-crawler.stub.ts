@@ -1,4 +1,4 @@
-import { PLToFileExtension, ProgrammingLanguage } from "../../src/repo-crawler/consts/language-to-file-exntension.map"
+import { PLToFileExtension, ProgrammingLanguage } from "../../src/file-crawler/consts/language-to-file-exntension.map"
 
 export const globMockFiles = (pattern: string): string[] => {
     const availableExtentions = PLToFileExtension.entries();

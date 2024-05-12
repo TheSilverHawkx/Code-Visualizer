@@ -11,9 +11,11 @@
                 "--folder-path",
                 "${input:folderPath}",
                 "--language",
-                "${input:language}"
+                "${input:language}",
+                ""
             ],
             "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+            "console": "integratedTerminal" 
         },
         {
             "type": "node",

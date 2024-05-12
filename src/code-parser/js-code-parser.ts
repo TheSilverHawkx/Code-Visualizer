@@ -1,18 +1,19 @@
-import { Path } from "glob";
 import { BaseCodeParser } from "./base-code-parser";
 import { readFileSync } from "fs";
-import { JavascriptCodeParserOptions } from "./types/code-parser.types";
-import * as acorn from 'acorn';
+import { CodePage, JavascriptCodeParserOptions } from "./types/code-parser.types";
+import acorn = require('acorn');
 import { supportedEcmaVersions } from "./consts/js-code-parser.consts";
 import { FileCrawler } from "../file-crawler/file-crawler.service";
 import { ProgrammingLanguage } from "../file-crawler/consts/language-to-file-exntension.map";
 import { UnknownESVersion } from "../error.types";
+import { ASTParser } from "../ast-parser/ast-parser.service";
 
 export class JavascriptCodeParser extends BaseCodeParser {
     private readonly ecmascriptVersion: acorn.ecmaVersion | undefined;
     private readonly fileEncoding: BufferEncoding;
     private readonly supportedEcmaVersions: number[] = supportedEcmaVersions
     private readonly fileCrawler: FileCrawler;
+    private readonly astParser: ASTParser;
 
     constructor(
         options: JavascriptCodeParserOptions = {
@@ -26,9 +27,10 @@ export class JavascriptCodeParser extends BaseCodeParser {
         this.ecmascriptVersion = options.ecmaVersion;
 
         this.fileCrawler = new FileCrawler(ProgrammingLanguage.Javascript);
+        this.astParser = new ASTParser();
     }
 
-    parseFile( filePath: string): any {
+    parseFile( filePath: string): CodePage | undefined {
         try {
             const fileContents = readFileSync(filePath,{
                 encoding: this.fileEncoding
@@ -51,8 +53,10 @@ export class JavascriptCodeParser extends BaseCodeParser {
             } else {
                 AST = acorn.parse(fileContents, { ecmaVersion: this.ecmascriptVersion})
             }
+            return AST
+                ? this.astParser.parse(filePath,AST)
+                : undefined;
             
-            return AST;
         } catch (error) {
             console.warn(`Failed to prase code file '${filePath}'. Error: ${error}`);
             throw error;
@@ -60,14 +64,24 @@ export class JavascriptCodeParser extends BaseCodeParser {
     }
 
 
-    async scan(folderPath: string): Promise<acorn.Program | undefined> {
+    scan(folderPath: string): void {
         const files = this.fileCrawler.getAllFilePathsByProgrammingLanguage(
             folderPath
         );
+        const codePages: Array<CodePage> = [];
 
-        if (files && files.length) {
-            return this.parseFile(files[0].fullpath());
+        for (const file of files) {
+            const filePath = file.fullpath();
+            const codePage = this.parseFile(filePath);
+
+            if (codePage) {
+                codePages.push(codePage)
+            }
         }
+
+        codePages.forEach( page=> console.log(JSON.stringify(page)))
+
+
     }
 
     

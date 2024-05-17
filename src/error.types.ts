@@ -7,7 +7,7 @@ export class UnsupportedLanguage extends Error {
 }
 
 export class UnknownESVersion extends Error {
-    constructor(filePath: string) {
-        super(`File '${filePath}' has an unsuppored ES version`);
+    constructor() {
+        super(`Unsuppored ES version`);
     }
 }

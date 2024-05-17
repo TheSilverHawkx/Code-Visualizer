@@ -26,15 +26,21 @@ export class JavascriptCodeParser extends BaseCodeParser {
             } else {
                 for (const version of this.supportedEcmaVersions) {
                     try {
-                        return acorn.parse(fileContents, {
+                        const ast = acorn.parse(fileContents, {
                             ecmaVersion: version as acorn.ecmaVersion,
                         });
-                    } catch (error) {}
+
+                        return ast;
+                    } catch (error) {
+                        console.debug(
+                            `Failed to parse file '${filePath}' with ecma version '${version}'`
+                        );
+                    }
                 }
-                throw new UnknownESVersion(filePath);
+                throw new UnknownESVersion();
             }
         } catch (error) {
-            console.warn(`Failed to prase code file '${filePath}'. Error: ${error}`);
+            console.warn(`Failed to prase code file '${filePath}'. ${error}`);
             throw error;
         }
     }

@@ -1,1 +1,1 @@
-export const LOCAL_IMPORT_IDENTIFIER = ['./','../','/']
+export const LOCAL_IMPORT_IDENTIFIER = ['./', '../', '/'];

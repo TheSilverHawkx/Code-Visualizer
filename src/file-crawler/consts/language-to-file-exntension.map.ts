@@ -1,9 +1,9 @@
 export enum ProgrammingLanguage {
     Javascript = 'Javascript',
-    Typescript = 'Typescript'
+    Typescript = 'Typescript',
 }
 
-export const PLToFileExtension: ReadonlyMap<ProgrammingLanguage,string> = new Map([
+export const PLToFileExtension: ReadonlyMap<ProgrammingLanguage, string> = new Map([
     [ProgrammingLanguage.Javascript, '.js'],
-    [ProgrammingLanguage.Typescript, '.ts']
-])
+    [ProgrammingLanguage.Typescript, '.ts'],
+]);

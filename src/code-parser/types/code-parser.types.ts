@@ -1,18 +1,19 @@
-import * as acorn from 'acorn'
+import * as acorn from 'acorn';
+
+export type ASTNode = acorn.Node;
 
 export interface BaseCodeParserOptions {
-    encoding: BufferEncoding
+    encoding: BufferEncoding;
 }
 
-export interface JavascriptCodeParserOptions extends BaseCodeParserOptions{
-    ecmaVersion?: acorn.ecmaVersion
-} 
+export interface JavascriptCodeParserOptions extends BaseCodeParserOptions {
+    ecmaVersion?: acorn.ecmaVersion;
+}
 
 export interface CodePage {
     fileName: string;
     dependencies: CodeDependency[];
-    ast: acorn.Program
-
+    ast: acorn.Program;
 }
 
 export enum CodeDependencySoruceType {

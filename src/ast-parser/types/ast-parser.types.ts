@@ -1,3 +1,16 @@
-import acorn = require('acorn');
+import {
+    CodeDependency,
+    CodeDependencySoruceType,
+} from '../../code-parser/types/code-parser.types';
 
-export type ASTImportDependencyNode = acorn.ImportDeclaration | acorn.VariableDeclaration
+export interface DependencySource {
+    value: string;
+    type: CodeDependencySoruceType;
+}
+
+export interface ASTParserState {
+    dependencies: Array<CodeDependency>;
+    functions: object;
+    classes: object;
+    variables: Record<string, any>;
+}

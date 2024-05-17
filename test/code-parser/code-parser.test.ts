@@ -1,7 +1,7 @@
 import { FileCrawler } from '../../src/file-crawler/file-crawler.service';
 import { ProgrammingLanguage } from '../../src/file-crawler/consts/language-to-file-exntension.map';
-import {UnknownESVersion} from '../../src/error.types'
-import {JavascriptCodeParser} from '../../src/code-parser/js-code-parser'
+import { UnknownESVersion } from '../../src/error.types';
+import { JavascriptCodeParser } from '../../src/code-parser/js-code-parser';
 import { PathOrFileDescriptor } from 'fs';
 // import { JavascriptCodeStub } from './code-parser.stub';
 import { Path } from 'glob';
@@ -19,18 +19,19 @@ describe('CodeParser', () => {
     // })
 
     describe('Testing Programming Language Javascript', () => {
-        const jsParser = new JavascriptCodeParser();
+        const jsParser = new JavascriptCodeParser({
+            encoding: 'utf-8',
+        });
         test('File with unknown ES version throws error', () => {
-            expect( () => {
-                jsParser.parseFile(`test/code-parser/code-files/invalid.js`)
-            }
-            ).toThrow(UnknownESVersion)
-        })
+            expect(() => {
+                jsParser.parseFileToAST(`test/code-parser/code-files/invalid.js`);
+            }).toThrow(UnknownESVersion);
+        });
 
         test('File with valid ES version returns AST', () => {
             expect(
-                jsParser.parseFile("test/code-parser/code-files/valid.js")
-            ).toBeDefined()
-        })
-    })
-})
+                jsParser.parseFileToAST('test/code-parser/code-files/valid.js')
+            ).toBeDefined();
+        });
+    });
+});
